@@ -1,0 +1,53 @@
+name: nbval
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+    - 'main'
+    paths:
+    - 'notebooks/**.ipynb'
+    - 'notebooks/**.py'
+    - 'requirements.txt'
+    - '.github/workflows/nbval.yml'
+  push:
+    branches:
+    - 'main'
+    paths:
+    - 'notebooks/**.ipynb'
+    - 'notebooks/**.py'
+    - 'requirements.txt'
+    - '.github/workflows/nbval.yml'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04,]
+        python: [3.7, 3.8]
+        include:
+        - os: ubuntu-20.04
+          pip_cache_path: ~/.cache/pip
+    steps:
+    - name: Cache Pip
+      uses: actions/cache@v2
+      with:
+        path: ${{ matrix.pip_cache_path }}
+        key: ${{ runner.os }}-${{ matrix.python }}-cache
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Set up Python 
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+    - name: install jupyterlab nbval
+      run: |
+        python -m pip install nbval jupyterlab openvino-dev
+    - name: Analysing with nbval
+      run: |
+        python -m pytest --nbval --durations 10 .
+    - name: ls
+      run: |
+        ls convert-models/ir_models
