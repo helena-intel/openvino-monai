@@ -25,11 +25,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04,]
-        python: [3.7, 3.8]
+        os: [windows-latest, ubuntu-20.04]
+        python: [3.6, 3.7, 3.8]
         include:
         - os: ubuntu-20.04
           pip_cache_path: ~/.cache/pip
+        - os: windows-latest
+          pip_cache_path: ~\AppData\Local\pip\Cache
     steps:
     - name: Cache Pip
       uses: actions/cache@v2
