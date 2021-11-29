@@ -1,0 +1,7 @@
+openvino-dev[onnx]
+monai
+pytorch-lightning
+torch==1.8.*
+git+https://github.com/MedMNIST/MedMNIST.git
+ipywidgets
+jupyterlab
